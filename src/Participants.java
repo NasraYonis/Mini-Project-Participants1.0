@@ -7,13 +7,11 @@ import javax.swing.text.DocumentFilter;
 
 public class Participants extends JFrame {
     private JPanel panelMain;
-    private JTextField textField1;
     private JSpinner spinner1;
     private JSpinner spinner2;
     private JButton addParticipantButton;
 
     public Participants() {
-        JPanel panelMain = new JPanel();
         new JTextField();
 
         // Add key listener to the text field
