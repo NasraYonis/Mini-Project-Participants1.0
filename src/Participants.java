@@ -1,11 +1,9 @@
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-
-;
+import java.util.Vector;
 
 
 public class Participants extends JFrame {
@@ -14,29 +12,33 @@ public class Participants extends JFrame {
     private JSpinner spinner1;
     private JSpinner spinner2;
     private JButton addParticipantButton;
+    private JList<Participant> list1;
+    private JPanel subPanel2;
+    private JPanel subPanel1;
 
-    public Participants() {
+    public Participants(JList<Participant> list1) {
         JTextField alphabeticTextField;
         alphabeticTextField = new JTextField();
+        Participants participants = new Participants();
+        JFrame frame = new JFrame("Participant List");
+        frame.setContentPane(participants.panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
 
 // Create a document filter that rejects non-alphabetic characters
         AbstractDocument doc = (AbstractDocument) textField1.getDocument();
         doc.setDocumentFilter(new DocumentFilter() {
-            private AttributeSet attrs;
-            private int offset;
-            private FilterBypass fb;
-            private AttributeSet attr;
+            private final ThreadLocal<FilterBypass> fb = new ThreadLocal<>();
 
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                this.fb = fb;
-                this.offset = offset;
-                this.attr = attr;
+                this.fb.set(fb);
                 if (string == null) {
                     return;
                 }
-                // Reject non-alphabetic characters
-                if (!string.matches("[a-zA-Z]+")) {
+                // Reject non-alphabetic characters and non-whitespace characters
+                if (!string.matches("[a-zA-Z\\s]+")) {
                     return;
                 }
                 super.insertString(fb, offset, string, attr);
@@ -44,26 +46,27 @@ public class Participants extends JFrame {
 
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                this.fb = fb;
-                this.offset = offset;
-                this.attrs = attrs;
+                this.fb.set(fb);
                 if (text == null) {
                     return;
                 }
-                // Reject non-alphabetic characters
-                if (!text.matches("[a-zA-Z]+")) {
+                // Reject non-alphabetic characters and non-whitespace characters
+                if (!text.matches("[a-zA-Z\\s]+")) {
                     return;
                 }
                 super.replace(fb, offset, length, text, attrs);
             }
         });
 
-
-
         // When the addParticipantButton is clicked...
         addParticipantButton.addActionListener(e -> {
-            String participants = alphabeticTextField.getText();
-            JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
+            String name = alphabeticTextField.getText();
+            int hours = (int) spinner1.getValue();
+            int minutes = (int) spinner2.getValue();
+            String participant = name + " (" + hours + ":" + String.format("%02d", minutes) + ")";
+            DefaultListModel<Participant> listModel = (DefaultListModel<Participant>) list1.getModel();
+            listModel.addElement(new Participant(name, hours, minutes));
+            JOptionPane.showMessageDialog(addParticipantButton, name + " Thank You!");
         });
 
         // Set the minimum and maximum values for spinner1
@@ -97,6 +100,13 @@ public class Participants extends JFrame {
                 model.setValue(0);
             }
         });
+        // Initialize the list model
+        DefaultListModel<Participant> listModel = new DefaultListModel<>();
+
+         }
+
+    public Participants() {
+
     }
 
     private void removeNonAlphabeticCharacters(JTextField textField) {
@@ -123,6 +133,29 @@ public class Participants extends JFrame {
         h.setSize(400, 400);
         h.setVisible(true);
         h.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }}
 
+        DefaultListModel<Participant> listModel = new DefaultListModel<>();
+        h.list1.setModel(listModel); // set the model for the JList
+
+            }
+
+
+    public record Participant(String name, int hours, int minutes) {
+
+        public Participant(String name) {
+            this(name, 0, 0);
+        }
+
+        public Participant(String name, int hours, int minutes) {
+            this.name = name;
+            this.hours = hours;
+            this.minutes = minutes;
+        }
+
+    @Override
+    public String toString() {
+        String time = hours + ":" + minutes;
+        return name + " - " + time;
+    }
+}}
 
