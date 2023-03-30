@@ -1,29 +1,31 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+;
+
 
 public class Participants extends JFrame {
     private JPanel panelMain;
+    private JTextField textField1;
     private JSpinner spinner1;
     private JSpinner spinner2;
     private JButton addParticipantButton;
 
     public Participants() {
-        new JTextField();
-
-        // Add key listener to the text field
-        JTextField textField1 = new JTextField();
+        JTextField alphabeticTextField;
+        alphabeticTextField = new JTextField();
 
 // Create a document filter that rejects non-alphabetic characters
         AbstractDocument doc = (AbstractDocument) textField1.getDocument();
         doc.setDocumentFilter(new DocumentFilter() {
-            public FilterBypass fb;
-            public int offset;
-            public AttributeSet attrs;
-            public AttributeSet attr;
+            private AttributeSet attrs;
+            private int offset;
+            private FilterBypass fb;
+            private AttributeSet attr;
 
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
@@ -60,7 +62,7 @@ public class Participants extends JFrame {
 
         // When the addParticipantButton is clicked...
         addParticipantButton.addActionListener(e -> {
-            String participants = textField1.getText();
+            String participants = alphabeticTextField.getText();
             JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
         });
 
@@ -97,6 +99,23 @@ public class Participants extends JFrame {
         });
     }
 
+    private void removeNonAlphabeticCharacters(JTextField textField) {
+        try {
+            String text = textField.getText(0, textField.getDocument().getLength());
+            StringBuilder filteredText = new StringBuilder();
+            for (char c : text.toCharArray()) {
+                if (Character.isLetter(c)) {
+                    filteredText.append(c);
+                }
+            }
+            if (!filteredText.toString().equals(text)) {
+                textField.setText(filteredText.toString());
+            }
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         Participants h = new Participants();
         h.setContentPane(h.panelMain);
@@ -104,5 +123,6 @@ public class Participants extends JFrame {
         h.setSize(400, 400);
         h.setVisible(true);
         h.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-}
+    }}
+
+
