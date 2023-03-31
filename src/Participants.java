@@ -1,11 +1,11 @@
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-
-;import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class Participants extends JFrame {
@@ -14,28 +14,20 @@ public class Participants extends JFrame {
     private JSpinner spinner1;
     private JSpinner spinner2;
     private JButton addParticipantButton;
-    private JPanel subPanel1;
-    private JPanel subPanel2;
     private JList list1;
+    private JPanel subPanel2;
+    private JPanel subPanel1;
 
     public Participants() {
-        JTextField alphabeticTextField;
-        alphabeticTextField = new JTextField();
+        new JTextField();
         ArrayList<ParticipantManagement> list = new ArrayList<>();
 
 // Create a document filter that rejects non-alphabetic characters
         AbstractDocument doc = (AbstractDocument) textField1.getDocument();
         doc.setDocumentFilter(new DocumentFilter() {
-            private AttributeSet attrs;
-            private int offset;
-            private FilterBypass fb;
-            private AttributeSet attr;
 
             @Override
             public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                this.fb = fb;
-                this.offset = offset;
-                this.attr = attr;
                 if (string == null) {
                     return;
                 }
@@ -48,9 +40,6 @@ public class Participants extends JFrame {
 
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                this.fb = fb;
-                this.offset = offset;
-                this.attrs = attrs;
                 if (text == null) {
                     return;
                 }
@@ -67,9 +56,10 @@ public class Participants extends JFrame {
         // When the addParticipantButton is clicked...
         addParticipantButton.addActionListener(e -> {
             list.add(new ParticipantManagement(textField1.getText(), (int)spinner1.getValue(),(int)spinner2.getValue()));
+            Collections.sort(list, Comparator.comparingInt(ParticipantManagement::getAppointmentTime));
             list1.setListData(list.toArray());
-//            String participants = alphabeticTextField.getText();
-//            JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
+            // String participants = alphabeticTextField.getText();
+            //JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
         });
 
         // Set the minimum and maximum values for spinner1
