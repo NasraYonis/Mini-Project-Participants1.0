@@ -5,7 +5,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-;
+;import java.util.ArrayList;
 
 
 public class Participants extends JFrame {
@@ -14,10 +14,14 @@ public class Participants extends JFrame {
     private JSpinner spinner1;
     private JSpinner spinner2;
     private JButton addParticipantButton;
+    private JPanel subPanel1;
+    private JPanel subPanel2;
+    private JList list1;
 
     public Participants() {
         JTextField alphabeticTextField;
         alphabeticTextField = new JTextField();
+        ArrayList<ParticipantManagement> list = new ArrayList<>();
 
 // Create a document filter that rejects non-alphabetic characters
         AbstractDocument doc = (AbstractDocument) textField1.getDocument();
@@ -36,7 +40,7 @@ public class Participants extends JFrame {
                     return;
                 }
                 // Reject non-alphabetic characters
-                if (!string.matches("[a-zA-Z]+")) {
+                if (!string.matches("[a-zA-Z\\s]+")) {
                     return;
                 }
                 super.insertString(fb, offset, string, attr);
@@ -51,7 +55,7 @@ public class Participants extends JFrame {
                     return;
                 }
                 // Reject non-alphabetic characters
-                if (!text.matches("[a-zA-Z]+")) {
+                if (!text.matches("[a-zA-Z\\s]+")) {
                     return;
                 }
                 super.replace(fb, offset, length, text, attrs);
@@ -62,12 +66,14 @@ public class Participants extends JFrame {
 
         // When the addParticipantButton is clicked...
         addParticipantButton.addActionListener(e -> {
-            String participants = alphabeticTextField.getText();
-            JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
+            list.add(new ParticipantManagement(textField1.getText(), (int)spinner1.getValue(),(int)spinner2.getValue()));
+            list1.setListData(list.toArray());
+//            String participants = alphabeticTextField.getText();
+//            JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
         });
 
         // Set the minimum and maximum values for spinner1
-        SpinnerNumberModel model1 = new SpinnerNumberModel(0, 0, 24, 1);
+        SpinnerNumberModel model1 = new SpinnerNumberModel(0, 0, 23, 1);
         spinner1.setModel(model1);
 
         // Set the minimum and maximum values for spinner2
@@ -79,8 +85,8 @@ public class Participants extends JFrame {
             JSpinner spinner = (JSpinner) e.getSource();
             SpinnerNumberModel model = (SpinnerNumberModel) spinner.getModel();
             int value = (int) model.getValue();
-            if (value > 24) {
-                model.setValue(24);
+            if (value > 23) {
+                model.setValue(23);
             } else if (value < 0) {
                 model.setValue(0);
             }
