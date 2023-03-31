@@ -123,9 +123,6 @@ public class Participants extends JFrame {
         h.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }
 
 
