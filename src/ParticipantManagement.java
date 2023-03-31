@@ -4,6 +4,10 @@ public class ParticipantManagement {
     private int minutes;
 
     public ParticipantManagement(String name, int hour, int minutes) {
+        if (!name.matches("[a-zA-Z\\s]+")) {
+            throw new IllegalArgumentException("Name participant not valid!");
+        }
+
         this.name = name;
         this.hour = hour;
         this.minutes = minutes;

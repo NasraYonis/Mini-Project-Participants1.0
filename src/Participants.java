@@ -55,11 +55,13 @@ public class Participants extends JFrame {
 
         // When the addParticipantButton is clicked...
         addParticipantButton.addActionListener(e -> {
-            list.add(new ParticipantManagement(textField1.getText(), (int)spinner1.getValue(),(int)spinner2.getValue()));
-            Collections.sort(list, Comparator.comparingInt(ParticipantManagement::getAppointmentTime));
-            list1.setListData(list.toArray());
-            // String participants = alphabeticTextField.getText();
-            //JOptionPane.showMessageDialog(addParticipantButton, participants + " Thank You!");
+            try {
+                list.add(new ParticipantManagement(textField1.getText(), (int)spinner1.getValue(),(int)spinner2.getValue()));
+                Collections.sort(list, Comparator.comparingInt(ParticipantManagement::getAppointmentTime));
+                list1.setListData(list.toArray());
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(addParticipantButton, "Name participant not valid!");
+            }
         });
 
         // Set the minimum and maximum values for spinner1
@@ -119,6 +121,11 @@ public class Participants extends JFrame {
         h.setSize(400, 400);
         h.setVisible(true);
         h.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }}
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
+}
 
 
